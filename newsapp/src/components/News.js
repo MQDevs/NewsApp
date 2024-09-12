@@ -13,13 +13,17 @@ export class News extends Component {
     country: PropTypes.string,
     category:PropTypes.string,
   }
-    constructor(){
-        super();        
+  capitalizeFirstLetter(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+    constructor(props){
+        super(props);        
         this.state={
             articles: [],
             loading: false,
             page:1
         }
+        document.title=`${this.capitalizeFirstLetter(this.props.category)}-InsightToday`;
     }
     async componentDidMount(){
         let url=`https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=393ab18ff4e24d27b919904bc8c7ca28&page=1&pageSize=21`;
@@ -68,7 +72,7 @@ export class News extends Component {
     render() {
         return (
           <div className='container my-3'>
-            <h1 className="text-center">Insight Today - Top Headlines</h1>
+            <h1 className="text-center">Insight Today - Top Headlines on {this.capitalizeFirstLetter(this.props.category)}</h1>
             {this.state.loading && <Spinner />}
             
             <div className="row">
@@ -81,6 +85,9 @@ export class News extends Component {
                       description={element.description ? element.description.slice(0, 80) : ""}
                       ImageUrl={element.urlToImage}
                       newsUrl={element.url}
+                      author={element.author}
+                      date={element.publishedAt}
+                      source={element.source.name}
                     />
                   </div>
                 );
@@ -101,7 +108,7 @@ export class News extends Component {
                   &larr; Previous
                 </button>
                 <button
-                  disabled={this.state.page >1}
+                  // disabled={this.state.page >1}
                   type="button"
                   className="btn btn-dark"
                   onClick={this.handleNextClick}
